@@ -18,7 +18,7 @@ export class CuisinesController {
   @Get()
   @HttpCode(HttpStatus.OK)
   async getCuisines() {
-    const res = this.cuisinesService.getCuisines();
+    const res = await this.cuisinesService.getCuisines();
 
     return {
       data: res,
@@ -30,7 +30,7 @@ export class CuisinesController {
   @Get('set-menus')
   @HttpCode(HttpStatus.OK)
   async getSetMenus(@Query('slug') cuisineSlug?: string) {
-    const res = this.cuisinesService.getSetMenus(cuisineSlug);
+    const res = await this.cuisinesService.getSetMenus(cuisineSlug);
 
     return {
       data: res,
@@ -43,11 +43,23 @@ export class CuisinesController {
   async createCuisine(
     @Body(new ValidationPipe()) createCuisineDto: CreateCuisineDto,
   ): Promise<any> {
-    const res = this.cuisinesService.createCuisine(createCuisineDto);
+    const res = await this.cuisinesService.createCuisine(createCuisineDto);
 
     return {
       data: res,
       message: 'Cuisines Created Successfully',
+    };
+  }
+
+  @Get('/sync')
+  @HttpCode(HttpStatus.CREATED)
+  async syncCuisines() {
+    const res = await this.cuisinesService.syncCuisines();
+
+    return {
+      data: res,
+      status: 'success',
+      message: 'Cuisines Synced Successfully',
     };
   }
 }

@@ -6,7 +6,8 @@ export class Cuisine {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @Column({})
+  //   @Column({ unique: true })
   name: string;
 
   @Column()

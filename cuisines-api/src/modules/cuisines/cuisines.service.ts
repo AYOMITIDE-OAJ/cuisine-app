@@ -4,16 +4,18 @@ import { Cuisine } from './entities/cuisines.entity';
 import { Repository } from 'typeorm';
 import { ErrorHelper } from 'src/core/helpers';
 import { CreateCuisineDto } from './dto/cuisines.dto';
+import { HarvestService } from '../harvest/harvest.service';
 
 @Injectable()
 export class CuisinesService {
   constructor(
     @InjectRepository(Cuisine)
     private cuisineRepository: Repository<Cuisine>,
+    private readonly harvestService: HarvestService,
   ) {}
 
   async getCuisines(): Promise<Cuisine[]> {
-    return this.cuisineRepository.find({
+    return await this.cuisineRepository.find({
       order: { numberOfOrders: 'DESC' },
     });
   }
@@ -51,5 +53,9 @@ export class CuisinesService {
     });
 
     return this.cuisineRepository.save(cuisine);
+  }
+
+  async syncCuisines() {
+    return this.harvestService.harvestSetMenus();
   }
 }
