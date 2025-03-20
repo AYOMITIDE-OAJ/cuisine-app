@@ -41,7 +41,7 @@ export class CuisinesService {
 
     if (existingCuisine) {
       ErrorHelper.BadRequestException(
-        'Cuisine with this name or slug already exists',
+        `Cuisine with this name: ${name} or slug: ${slug} already exists`,
       );
     }
 
