@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ThrottlerModule } from '@nestjs/throttler';
+
 import { CuisinesModule } from './modules/cuisines/cuisines.module';
 import { Cuisine } from './modules/cuisines/entities/cuisines.entity';
 import { SetMenu } from './modules/cuisines/entities/setMenu.entity';
@@ -23,6 +25,14 @@ import { SetMenu } from './modules/cuisines/entities/setMenu.entity';
         entities: [Cuisine, SetMenu],
         synchronize: true, // Be careful with this option in production
       }),
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          ttl: 1000, // Time-to-live in seconds
+          limit: 1, // Number of requests allowed within TTL
+        },
+      ],
     }),
     CuisinesModule,
   ],
