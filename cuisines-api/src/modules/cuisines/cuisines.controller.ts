@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Post,
   Query,
   ValidationPipe,
@@ -14,19 +16,38 @@ export class CuisinesController {
   constructor(private readonly cuisinesService: CuisinesService) {}
 
   @Get()
+  @HttpCode(HttpStatus.OK)
   async getCuisines() {
-    return this.cuisinesService.getCuisines();
+    const res = this.cuisinesService.getCuisines();
+
+    return {
+      data: res,
+      status: 'success',
+      message: 'Cuisines Fetched Successfully',
+    };
   }
 
   @Get('set-menus')
+  @HttpCode(HttpStatus.OK)
   async getSetMenus(@Query('slug') cuisineSlug?: string) {
-    return this.cuisinesService.getSetMenus(cuisineSlug);
+    const res = this.cuisinesService.getSetMenus(cuisineSlug);
+
+    return {
+      data: res,
+      message: 'Set-Menu Triggered Successfully',
+    };
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async createCuisine(
     @Body(new ValidationPipe()) createCuisineDto: CreateCuisineDto,
   ): Promise<any> {
-    return this.cuisinesService.createCuisine(createCuisineDto);
+    const res = this.cuisinesService.createCuisine(createCuisineDto);
+
+    return {
+      data: res,
+      message: 'Cuisines Created Successfully',
+    };
   }
 }
