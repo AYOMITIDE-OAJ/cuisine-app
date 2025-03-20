@@ -47,7 +47,7 @@ export class HarvestService {
             cuisine = this.cuisineRepository.create({
               id: cuisineData.id,
               name: cuisineData.name,
-              slug: cuisineData.slug, 
+              slug: cuisineData.slug,
 
               // Initialize other cuisine properties if available
             });
