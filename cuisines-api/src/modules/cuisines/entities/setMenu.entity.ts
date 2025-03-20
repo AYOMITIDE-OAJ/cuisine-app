@@ -1,25 +1,99 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Cuisine } from './cuisines.entity';
-
 @Entity()
 export class SetMenu {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  name: string;
+  created_at: Date;
+
+  @ManyToMany(() => Cuisine)
+  @JoinTable()
+  cuisines: Cuisine[];
 
   @Column()
   description: string;
 
-  @Column('decimal')
-  price: number;
+  @Column()
+  display_text: number;
 
-  @Column('decimal', { nullable: true })
-  minSpend?: number;
+  @Column()
+  image: string;
 
   @Column()
   thumbnail: string;
+
+  @Column({ default: false })
+  is_vegan: boolean;
+
+  @Column({ default: false })
+  is_vegetarian: boolean;
+
+  @Column()
+  name: string;
+
+  @Column({ default: true })
+  status: boolean;
+
+  @Column({ type: 'jsonb', nullable: true })
+  groups: {
+    dishes_count: number;
+    selectable_dishes_count: number;
+    groups: {
+      ungrouped: number;
+      Starters?: number;
+      Mains?: number;
+      Sides?: number;
+      Dessert?: number;
+    };
+  };
+
+  @Column('decimal')
+  price_per_person: number;
+
+  @Column('decimal', { nullable: true })
+  min_spend?: number;
+
+  @Column({ default: false })
+  is_seated: boolean;
+
+  @Column({ default: false })
+  is_standing: boolean;
+
+  @Column({ default: false })
+  is_canape: boolean;
+
+  @Column({ default: false })
+  is_mixed_dietary: boolean;
+
+  @Column({ default: false })
+  is_meal_prep: boolean;
+
+  @Column({ default: false })
+  is_halal: boolean;
+
+  @Column({ default: false })
+  is_kosher: boolean;
+
+  @Column({ nullable: true })
+  price_includes: string;
+
+  @Column({ nullable: true })
+  highlight: string;
+
+  @Column({ default: true })
+  available: boolean;
+
+  @Column({ default: 0 })
+  number_of_orders: number;
 
   @ManyToOne(() => Cuisine, (cuisine) => cuisine.setMenus)
   cuisine: Cuisine;
