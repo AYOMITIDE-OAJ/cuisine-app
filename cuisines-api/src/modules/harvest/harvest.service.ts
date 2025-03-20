@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cuisine } from '../cuisines/entities/cuisines.entity';
 import { Repository } from 'typeorm';
@@ -8,6 +8,9 @@ import { ErrorHelper } from 'src/core/helpers';
 
 @Injectable()
 export class HarvestService {
+  private readonly logger = new Logger(HarvestService.name);
+  private readonly API_URL =
+    'https://staging.yhangry.com/booking/test/set-menus';
   constructor(
     @InjectRepository(Cuisine)
     private readonly cuisineRepository: Repository<Cuisine>,
@@ -17,10 +20,8 @@ export class HarvestService {
 
   async harvestSetMenus(): Promise<boolean> {
     try {
-      const response = await axios.get(
-        'https://staging.yhangry.com/booking/test/set-menus',
-      );
-      const data = response.data.data;
+      const response = await axios.get(this.API_URL);
+      const { data } = response.data;
 
       // verify structure
       if (!data) {
@@ -46,7 +47,7 @@ export class HarvestService {
             cuisine = this.cuisineRepository.create({
               id: cuisineData.id,
               name: cuisineData.name,
-              slug: cuisineData.slug, //Assign slug
+              slug: cuisineData.slug, 
 
               // Initialize other cuisine properties if available
             });
