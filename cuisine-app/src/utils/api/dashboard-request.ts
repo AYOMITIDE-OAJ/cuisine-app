@@ -9,7 +9,7 @@ export const useFetchCuisines = () => {
   const [pageSize, setPageSize] = useState(10);
 
   const query = useQuery({
-    queryKey: [queryKeys.users, page, pageSize],
+    queryKey: [queryKeys.cuisines, page, pageSize],
     queryFn: () => getCuisines(),
   });
 

@@ -34,12 +34,6 @@ export class HarvestService {
         // Get or Create Cuisines
         const cuisineEntities: Cuisine[] = [];
         for (const cuisineData of setMenuData.cuisines) {
-          if (!cuisineData.slug) {
-            cuisineData.slug = cuisineData.name
-              .toLowerCase()
-              .replace(/ /g, '-');
-          }
-
           let cuisine = await this.cuisineRepository.findOne({
             where: { id: cuisineData.id },
           });
@@ -47,7 +41,7 @@ export class HarvestService {
             cuisine = this.cuisineRepository.create({
               id: cuisineData.id,
               name: cuisineData.name,
-              slug: cuisineData.slug,
+              slug: cuisineData.name,
               number_of_orders: setMenuData.number_of_orders,
             });
             cuisine = await this.cuisineRepository.save(cuisine);
