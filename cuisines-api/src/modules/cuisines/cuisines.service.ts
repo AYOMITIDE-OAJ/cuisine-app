@@ -3,56 +3,44 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Cuisine } from './entities/cuisines.entity';
 import { Repository } from 'typeorm';
 import { ErrorHelper } from 'src/core/helpers';
-import { CreateCuisineDto } from './dto/cuisines.dto';
 import { HarvestService } from '../harvest/harvest.service';
+import { SetMenu } from './entities/setMenu.entity';
 
 @Injectable()
 export class CuisinesService {
   constructor(
     @InjectRepository(Cuisine)
     private cuisineRepository: Repository<Cuisine>,
+    @InjectRepository(SetMenu)
+    private setMenuRepository: Repository<SetMenu>,
     private readonly harvestService: HarvestService,
   ) {}
 
   async getCuisines(): Promise<Cuisine[]> {
-    return await this.cuisineRepository.find({
-      order: { numberOfOrders: 'DESC' },
-    });
+    try {
+      return await this.cuisineRepository.find({
+        order: { numberOfOrders: 'DESC' },
+      });
+    } catch (error) {
+      ErrorHelper.BadRequestException(error);
+    }
   }
 
   async getSetMenus(cuisineSlug?: string): Promise<any> {
-    const query = this.cuisineRepository
-      .createQueryBuilder('cuisine')
-      .leftJoinAndSelect('cuisine.setMenus', 'setMenus')
-      .where('setMenus.isLive = :isLive', { isLive: true });
+    try {
+      const query = this.setMenuRepository
+        .createQueryBuilder('setMenu')
+        .leftJoinAndSelect('setMenu.cuisines', 'cuisine')
+        .where('setMenu.isLive = :isLive', { isLive: true });
 
-    if (cuisineSlug) {
-      query.andWhere('cuisine.slug = :slug', { slug: cuisineSlug });
+      if (cuisineSlug) {
+        query.andWhere('cuisine.slug = :slug', { slug: cuisineSlug });
+      }
+
+      return query.getMany();
+    } catch (error) {
+      ErrorHelper.BadRequestException(error);
     }
-
-    return query.getMany();
-  }
-
-  async createCuisine(createCuisineDto: CreateCuisineDto): Promise<Cuisine> {
-    const { name, slug } = createCuisineDto;
-
-    // Just to confirm if cuisine with the same name or slug already exists
-    const existingCuisine = await this.cuisineRepository.findOne({
-      where: [{ name }, { slug }],
-    });
-
-    if (existingCuisine) {
-      ErrorHelper.BadRequestException(
-        `Cuisine with this name: ${name} or slug: ${slug} already exists`,
-      );
-    }
-
-    const cuisine = this.cuisineRepository.create({
-      name,
-      slug,
-    });
-
-    return this.cuisineRepository.save(cuisine);
   }
 
   async syncCuisines() {

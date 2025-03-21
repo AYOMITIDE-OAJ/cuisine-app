@@ -1,15 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-  Query,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { CuisinesService } from './cuisines.service';
-import { CreateCuisineDto } from './dto/cuisines.dto';
 
 @Controller('cuisines')
 export class CuisinesController {
@@ -35,19 +25,6 @@ export class CuisinesController {
     return {
       data: res,
       message: 'Set-Menu Triggered Successfully',
-    };
-  }
-
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  async createCuisine(
-    @Body(new ValidationPipe()) createCuisineDto: CreateCuisineDto,
-  ): Promise<any> {
-    const res = await this.cuisinesService.createCuisine(createCuisineDto);
-
-    return {
-      data: res,
-      message: 'Cuisines Created Successfully',
     };
   }
 

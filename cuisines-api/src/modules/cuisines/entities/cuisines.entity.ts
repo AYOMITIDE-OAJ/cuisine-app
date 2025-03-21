@@ -1,4 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  JoinTable,
+  ManyToMany,
+} from 'typeorm';
 import { SetMenu } from './setMenu.entity';
 
 @Entity()
@@ -7,7 +13,6 @@ export class Cuisine {
   id: number;
 
   @Column({})
-  //   @Column({ unique: true })
   name: string;
 
   @Column()
@@ -16,7 +21,12 @@ export class Cuisine {
   @Column({ default: 0 })
   numberOfOrders: number;
 
-  @OneToMany(() => SetMenu, (setMenu) => setMenu.cuisine)
+  @ManyToMany(() => SetMenu, (setMenu) => setMenu.cuisines)
+  @JoinTable({
+    name: 'set_menu_cuisines_cuisine',
+    joinColumn: { name: 'cuisineId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'setMenuId', referencedColumnName: 'id' },
+  })
   setMenus: SetMenu[];
 
   @Column({ default: 0 })

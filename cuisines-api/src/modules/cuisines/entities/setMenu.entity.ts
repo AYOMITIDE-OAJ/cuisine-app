@@ -16,7 +16,11 @@ export class SetMenu {
   created_at: Date;
 
   @ManyToMany(() => Cuisine)
-  @JoinTable()
+  @JoinTable({
+    name: 'set_menu_cuisines_cuisine',
+    joinColumn: { name: 'setMenuId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'cuisineId', referencedColumnName: 'id' },
+  })
   cuisines: Cuisine[];
 
   @Column()
