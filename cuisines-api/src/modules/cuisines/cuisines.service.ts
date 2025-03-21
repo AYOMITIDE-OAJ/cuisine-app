@@ -19,7 +19,7 @@ export class CuisinesService {
   async getCuisines(): Promise<Cuisine[]> {
     try {
       return await this.cuisineRepository.find({
-        order: { numberOfOrders: 'DESC' },
+        order: { number_of_orders: 'DESC' },
       });
     } catch (error) {
       ErrorHelper.BadRequestException(error);
@@ -31,7 +31,8 @@ export class CuisinesService {
       const query = this.setMenuRepository
         .createQueryBuilder('setMenu')
         .leftJoinAndSelect('setMenu.cuisines', 'cuisine')
-        .where('setMenu.isLive = :isLive', { isLive: true });
+        .where('setMenu.isLive = :isLive', { isLive: true })
+        .orderBy('setMenu.number_of_orders', 'DESC');
 
       if (cuisineSlug) {
         query.andWhere('cuisine.slug = :slug', { slug: cuisineSlug });

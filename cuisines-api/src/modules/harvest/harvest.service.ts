@@ -48,8 +48,7 @@ export class HarvestService {
               id: cuisineData.id,
               name: cuisineData.name,
               slug: cuisineData.slug,
-
-              // Initialize other cuisine properties if available
+              number_of_orders: setMenuData.number_of_orders,
             });
             cuisine = await this.cuisineRepository.save(cuisine);
           }

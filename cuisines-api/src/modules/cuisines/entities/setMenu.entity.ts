@@ -23,7 +23,7 @@ export class SetMenu {
   })
   cuisines: Cuisine[];
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 
   @Column()

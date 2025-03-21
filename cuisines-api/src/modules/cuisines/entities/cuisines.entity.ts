@@ -19,7 +19,7 @@ export class Cuisine {
   slug: string;
 
   @Column({ default: 0 })
-  numberOfOrders: number;
+  number_of_orders: number;
 
   @ManyToMany(() => SetMenu, (setMenu) => setMenu.cuisines)
   @JoinTable({
