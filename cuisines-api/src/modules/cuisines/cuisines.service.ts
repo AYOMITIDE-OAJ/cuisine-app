@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { ErrorHelper } from 'src/core/helpers';
 import { HarvestService } from '../harvest/harvest.service';
 import { SetMenu } from './entities/setMenu.entity';
+import { PaginationDto, PaginationResultDto } from 'src/lib/util/dto';
 
 @Injectable()
 export class CuisinesService {
@@ -26,21 +27,79 @@ export class CuisinesService {
     }
   }
 
-  async getSetMenus(cuisineSlug?: string): Promise<any> {
+  async getSetMenusx(
+    cuisineSlug?: string,
+    paginationQuery?: PaginationDto,
+  ): Promise<any> {
     try {
+      const { limit, page } = paginationQuery;
+      const skip = (page - 1) * limit;
+
       const query = this.setMenuRepository
         .createQueryBuilder('setMenu')
         .leftJoinAndSelect('setMenu.cuisines', 'cuisine')
         .where('setMenu.isLive = :isLive', { isLive: true })
-        .orderBy('setMenu.number_of_orders', 'DESC');
+        .orderBy('setMenu.number_of_orders', 'DESC')
+        .skip(skip)
+        .take(limit);
 
       if (cuisineSlug) {
         query.andWhere('cuisine.slug = :slug', { slug: cuisineSlug });
       }
 
-      return query.getMany();
+      const [data, count] = await query.getManyAndCount();
+
+      return new PaginationResultDto(data, count, { limit, page });
     } catch (error) {
       ErrorHelper.BadRequestException(error);
+    }
+  }
+
+  async getSetMenus(
+    cuisineSlug?: string,
+    paginationQuery?: PaginationDto,
+  ): Promise<any> {
+    try {
+      const limit = paginationQuery.limit || 6; // Default limit is 6
+      const page = paginationQuery.page || 1;
+
+      if (isNaN(limit) || limit <= 0) {
+        throw ErrorHelper.BadRequestException(
+          'Limit must be a positive integer',
+        );
+      }
+
+      if (isNaN(page) || page <= 0) {
+        throw ErrorHelper.BadRequestException(
+          'Page must be a positive integer',
+        );
+      }
+
+      const skip = Math.max((page - 1) * limit, 0);
+
+      // Build query
+      const query = this.setMenuRepository
+        .createQueryBuilder('setMenu')
+        .leftJoinAndSelect('setMenu.cuisines', 'cuisine')
+        .where('setMenu.isLive = :isLive', { isLive: true })
+        .orderBy('setMenu.number_of_orders', 'DESC') // Sort by number_of_orders DESC
+        .skip(skip)
+        .take(limit);
+
+      if (cuisineSlug) {
+        query.andWhere('cuisine.slug = :slug', { slug: cuisineSlug });
+      }
+
+      // Fetch data and count in one query
+      const [data, count] = await query.getManyAndCount();
+
+      // Return paginated result with metadata
+      return new PaginationResultDto(data, count, {
+        limit,
+        page,
+      });
+    } catch (error) {
+      throw ErrorHelper.BadRequestException(error);
     }
   }
 

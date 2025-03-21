@@ -1,41 +1,77 @@
-export interface ISetMenu {
-  created_at: string; // Assuming it's an ISO date string
-  cuisines: Cuisine[];
+interface Cuisine {
+  id: number;
+  name: string;
+  slug: string;
+  number_of_orders: number;
+  setMenusCount: number;
+}
+
+interface Groups {
+  Mains: number;
+  Sides: number;
+  Dessert: number;
+  Starters: number;
+  ungrouped: number;
+}
+
+interface GroupDetails {
+  groups: Groups;
+  dishes_count: number;
+  selectable_dishes_count: number;
+}
+
+interface SetMenu {
+  id: number;
+  created_at: string;
   description: string;
   display_text: number;
   image: string;
   thumbnail: string;
-  is_vegan: number; // or boolean if it's always 0 or 1
-  is_vegetarian: number; // or boolean if it's always 0 or 1
+  is_vegan: boolean;
+  is_vegetarian: boolean;
   name: string;
-  status: number;
-  groups: {
-    dishes_count: number;
-    selectable_dishes_count: number;
-    groups: {
-      ungrouped: number;
-      Starters: number;
-      Mains: number;
-      Sides: number;
-      Dessert: number;
-    };
-  };
-  price_per_person: number;
-  min_spend: number;
-  is_seated: number; // or boolean
-  is_standing: number; // or boolean
-  is_canape: number; // or boolean
-  is_mixed_dietary: number; // or boolean
-  is_meal_prep: number; // or boolean
-  is_halal: number; // or boolean
-  is_kosher: number; // or boolean
-  price_includes: any | null; // Assuming it can be any type or null
-  highlight: any | null; // Assuming it can be any type or null
+  status: boolean;
+  groups: GroupDetails;
+  price_per_person: string;
+  min_spend: string;
+  is_seated: boolean;
+  is_standing: boolean;
+  is_canape: boolean;
+  is_mixed_dietary: boolean;
+  is_meal_prep: boolean;
+  is_halal: boolean;
+  is_kosher: boolean;
+  price_includes: null | any; // Adjust 'any' if you have more specific info
+  highlight: null | any; // Adjust 'any' if you have more specific info
   available: boolean;
   number_of_orders: number;
+  isLive: boolean;
+  cuisines: Cuisine[];
 }
 
-export interface Cuisine {
-  id: number;
-  name: string;
+export interface Meta {
+  page: string;
+  limit: string;
+  itemCount: number;
+  pageCount: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+
+export interface ApiResponse {
+  data: SetMenu[];
+  meta: Meta;
+}
+
+export interface CuisinesState {
+  page: number;
+  pageSize: number;
+  setMenus: SetMenu[];
+  totalCount: number;
+  guestNumber: number;
+}
+
+export interface SetCuisinesPayload {
+  setMenus: SetMenu[];
+  totalCount: number;
 }

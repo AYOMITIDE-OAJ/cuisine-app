@@ -1,21 +1,39 @@
 import { useQuery } from "@tanstack/react-query";
+import { useDispatch, useSelector } from "react-redux";
+
 import useDashboardApi from "./dashboard.api";
 import { queryKeys } from "../constants";
-import { useState } from "react";
+import { incrementPage, setCuisines } from "../../redux/slices/cuisineSlice";
+import { RootState } from "../../redux/store";
 
 export const useFetchCuisines = () => {
   const { getCuisines } = useDashboardApi();
-  const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const dispatch = useDispatch();
+  const page = useSelector((state: RootState) => state.cuisine.page);
+  const pageSize = useSelector((state: RootState) => state.cuisine.pageSize);
 
   const query = useQuery({
     queryKey: [queryKeys.cuisines, page, pageSize],
-    queryFn: () => getCuisines(),
+    queryFn: () =>
+      getCuisines(page, pageSize).then((res) => {
+        dispatch(
+          setCuisines({
+            setMenus: res.data,
+            totalCount: res.meta.itemCount,
+          })
+        );
+        return res;
+      }),
+    // keepPreviousData: true, // Important for pagination
   });
+
+  const handleLoadMore = () => {
+    dispatch(incrementPage());
+  };
 
   return {
     ...query,
-    setPage,
-    setPageSize,
+    page,
+    handleLoadMore,
   };
 };

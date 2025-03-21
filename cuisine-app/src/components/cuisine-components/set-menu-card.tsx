@@ -1,5 +1,7 @@
-const SetMenuCard = ({ menu }) => {
-  console.log({ menu });
+const SetMenuCard = ({ menu, guestNumber }) => {
+  const pricePerPerson = parseFloat(menu?.price_per_person || "0");
+  const totalPrice = pricePerPerson * guestNumber;
+
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       <img
@@ -14,7 +16,7 @@ const SetMenuCard = ({ menu }) => {
         </span>
         <h3 className="text-lg font-semibold mt-2">{menu?.name}</h3>
         <p className="text-gray-600">{menu?.description}</p>
-        <p className="text-lg font-bold mt-4">£{menu?.number_of_orders}</p>
+        <p className="text-lg font-bold mt-4">£{totalPrice}</p>
       </div>
     </div>
   );

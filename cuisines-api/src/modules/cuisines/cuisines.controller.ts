@@ -1,5 +1,6 @@
 import { Controller, Get, HttpCode, HttpStatus, Query } from '@nestjs/common';
 import { CuisinesService } from './cuisines.service';
+import { PaginationDto } from 'src/lib/util/dto';
 
 @Controller('cuisines')
 export class CuisinesController {
@@ -19,8 +20,14 @@ export class CuisinesController {
 
   @Get('set-menus')
   @HttpCode(HttpStatus.OK)
-  async getSetMenus(@Query('slug') cuisineSlug?: string) {
-    const res = await this.cuisinesService.getSetMenus(cuisineSlug);
+  async getSetMenus(
+    @Query('slug') cuisineSlug?: string,
+    @Query() paginationQuery?: PaginationDto,
+  ) {
+    const res = await this.cuisinesService.getSetMenus(
+      cuisineSlug,
+      paginationQuery,
+    );
 
     return {
       data: res,
