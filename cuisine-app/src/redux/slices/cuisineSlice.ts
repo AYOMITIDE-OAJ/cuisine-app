@@ -7,6 +7,7 @@ const initialState: CuisinesState = {
   setMenus: [],
   totalCount: 0,
   guestNumber: 10,
+  selectedSlug: null,
 };
 
 const cuisineSlice = createSlice({
@@ -29,6 +30,10 @@ const cuisineSlice = createSlice({
     decrementGuestNumber: (state) => {
       state.guestNumber = Math.max(1, state.guestNumber - 1);
     },
+    setSelectedSlug: (state, action: PayloadAction<string | null>) => {
+      state.selectedSlug = action.payload;
+      state.page = 1;
+    },
   },
 });
 
@@ -38,6 +43,7 @@ export const {
   setPageSize,
   incrementGuestNumber,
   decrementGuestNumber,
+  setSelectedSlug,
 } = cuisineSlice.actions;
 
 export default cuisineSlice.reducer;

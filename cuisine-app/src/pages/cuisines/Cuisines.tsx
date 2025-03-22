@@ -75,8 +75,8 @@ const Cuisines = () => {
         <>
           <FilterSection
             filters={setMenus}
-            selectedFilter={selectedFilter}
-            onFilterSelect={setSelectedFilter}
+            // selectedFilter={selectedFilter}
+            // onFilterSelect={setSelectedFilter}
           />
           <SetMenuGrid menus={setMenus} guestNumber={guestNumber} />
           <LoadMoreButton onClick={handleLoadMore} />

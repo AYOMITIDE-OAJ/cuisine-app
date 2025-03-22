@@ -5,25 +5,29 @@ import useDashboardApi from "./dashboard.api";
 import { queryKeys } from "../constants";
 import { incrementPage, setCuisines } from "../../redux/slices/cuisineSlice";
 import { RootState } from "../../redux/store";
+import { ApiResponse } from "../../interfaces";
 
 export const useFetchCuisines = () => {
   const { getCuisines } = useDashboardApi();
   const dispatch = useDispatch();
   const page = useSelector((state: RootState) => state.cuisine.page);
   const pageSize = useSelector((state: RootState) => state.cuisine.pageSize);
+  const selectedSlug = useSelector(
+    (state: RootState) => state.cuisine.selectedSlug
+  );
 
   const query = useQuery({
-    queryKey: [queryKeys.cuisines, page, pageSize],
-    queryFn: () =>
-      getCuisines(page, pageSize).then((res) => {
-        dispatch(
-          setCuisines({
-            setMenus: res.data,
-            totalCount: res.meta.itemCount,
-          })
-        );
-        return res;
-      }),
+    queryKey: [queryKeys.cuisines, page, pageSize, selectedSlug],
+    queryFn: async () => {
+      const res: ApiResponse = await getCuisines(page, pageSize, selectedSlug);
+      dispatch(
+        setCuisines({
+          setMenus: res.data,
+          totalCount: res.meta.itemCount,
+        })
+      );
+      return res;
+    },
     // keepPreviousData: true, // Important for pagination
   });
 

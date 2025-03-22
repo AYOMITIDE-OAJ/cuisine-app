@@ -69,6 +69,7 @@ export interface CuisinesState {
   setMenus: SetMenu[];
   totalCount: number;
   guestNumber: number;
+  selectedSlug: string | null;
 }
 
 export interface SetCuisinesPayload {
