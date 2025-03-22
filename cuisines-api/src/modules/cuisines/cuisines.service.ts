@@ -21,11 +21,22 @@ export class CuisinesService {
 
   async getCuisines(): Promise<Cuisine[]> {
     try {
-      return await this.cuisineRepository.find({
+      const cacheKey = 'cuisines_list';
+
+      // Check if data is in cache
+      const cachedData = await this.cacheManager.get<Cuisine[]>(cacheKey);
+      if (cachedData) return cachedData;
+
+      const cuisines = await this.cuisineRepository.find({
         order: { number_of_orders: 'DESC' },
       });
+
+      // Store in cache for 5 minutes
+      await this.cacheManager.set(cacheKey, cuisines, 300);
+
+      return cuisines;
     } catch (error) {
-      ErrorHelper.BadRequestException(error);
+      throw ErrorHelper.BadRequestException(error);
     }
   }
 
