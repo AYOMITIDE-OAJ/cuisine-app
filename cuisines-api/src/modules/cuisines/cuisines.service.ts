@@ -60,37 +60,23 @@ export class CuisinesService {
     paginationQuery?: PaginationDto,
   ): Promise<any> {
     try {
-      const limit = paginationQuery.limit || 6; // Default limit is 6
-      const page = paginationQuery.page || 1;
-
-      if (isNaN(limit) || limit <= 0) {
-        throw ErrorHelper.BadRequestException(
-          'Limit must be a positive integer',
-        );
-      }
-
-      if (isNaN(page) || page <= 0) {
-        throw ErrorHelper.BadRequestException(
-          'Page must be a positive integer',
-        );
-      }
-
+      const { limit, page } = paginationQuery;
       const skip = Math.max((page - 1) * limit, 0);
 
-      // Build query
       const query = this.setMenuRepository
         .createQueryBuilder('setMenu')
         .leftJoinAndSelect('setMenu.cuisines', 'cuisine')
         .where('setMenu.isLive = :isLive', { isLive: true })
-        .orderBy('setMenu.number_of_orders', 'DESC') // Sort by number_of_orders DESC
+        .orderBy('setMenu.number_of_orders', 'DESC')
         .skip(skip)
         .take(limit);
 
       if (cuisineSlug) {
-        query.andWhere('cuisine.slug = :slug', { slug: cuisineSlug });
+        query
+          .andWhere('cuisine.slug = :slug')
+          .setParameters({ slug: cuisineSlug });
       }
 
-      // Fetch data and count in one query
       const [data, count] = await query.getManyAndCount();
 
       // Return paginated result with metadata
