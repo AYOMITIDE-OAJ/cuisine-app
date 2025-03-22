@@ -28,7 +28,6 @@ export const useFetchCuisines = () => {
       );
       return res;
     },
-    staleTime: 5000,
   });
 
   const handleLoadMore = () => {
