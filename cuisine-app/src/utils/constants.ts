@@ -9,4 +9,5 @@ export const APP_ROUTES = {
 
 export const queryKeys = {
   cuisines: "cuisines",
+  cuisineSlugs: "cuisineSlugs",
 };

@@ -5,9 +5,8 @@ import { RootState } from "../../redux/store";
 
 interface Filter {
   name: string;
-  slug?: string;
+  slug?: string | null;
   number_of_orders: number;
-  cuisines: any;
 }
 
 interface FilterSectionProps {
@@ -20,10 +19,18 @@ const FilterSection: React.FC<FilterSectionProps> = ({ filters }) => {
     (state: RootState) => state.cuisine.selectedSlug
   );
 
-  const allCuisines = filters.flatMap((filter) => filter.cuisines || []);
+  const uniqueFilters = useMemo(() => {
+    const map = new Map<string | null, Filter>();
+    filters.forEach((filter) => {
+      if (!map.has(filter.slug)) {
+        map.set(filter.slug, filter);
+      }
+    });
+    return Array.from(map.values());
+  }, [filters]);
 
   const allFilter = useMemo(() => {
-    const totalOrders = filters.reduce(
+    const totalOrders = uniqueFilters.reduce(
       (acc, filter) => acc + filter.number_of_orders,
       0
     );
@@ -31,25 +38,16 @@ const FilterSection: React.FC<FilterSectionProps> = ({ filters }) => {
       name: "All",
       number_of_orders: totalOrders,
       slug: null,
-      cuisines: allCuisines, // Add all cuisines here
     };
-  }, [filters]);
+  }, [uniqueFilters]);
 
   const allFilters = useMemo(
-    () => [allFilter, ...filters],
-    [allFilter, filters]
+    () => [allFilter, ...uniqueFilters],
+    [allFilter, uniqueFilters]
   );
 
-  const handleFilterClick = (filter) => {
-    if (filter.name === "All") {
-      dispatch(setSelectedSlug(null));
-    } else {
-      if (filter.cuisines && filter.cuisines.length > 0) {
-        dispatch(setSelectedSlug(filter.cuisines[0].slug || null));
-      } else {
-        dispatch(setSelectedSlug(null));
-      }
-    }
+  const handleFilterClick = (filter: Filter) => {
+    dispatch(setSelectedSlug(filter.slug));
   };
 
   return (
@@ -60,15 +58,12 @@ const FilterSection: React.FC<FilterSectionProps> = ({ filters }) => {
           <button
             key={filter.name}
             className={`px-4 py-2 rounded-full border ${
-              // selectedSlug === (filter.cuisines && filter.cuisines[0]?.slug)
               selectedSlug === filter.slug
                 ? "bg-gray-800 text-white"
                 : "bg-white text-gray-800 border-gray-300"
             }`}
             onClick={() => {
               handleFilterClick(filter);
-              console.log("Filter clicked:", filter);
-              console.log("selectedSlug:", selectedSlug);
             }}
           >
             {filter.name} ({filter.number_of_orders})

@@ -1,8 +1,11 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import LoadMoreButton from "../../components/cuisine-components/load-more-button";
 import SetMenuGrid from "../../components/cuisine-components/set-menu-grid";
 import FilterSection from "../../components/cuisine-components/filter";
-import { useFetchCuisines } from "../../utils/api/dashboard-request";
+import {
+  useFetchCuisines,
+  useFetchCuisineSlugs,
+} from "../../utils/api/dashboard-request";
 import { handleError } from "../../utils/notify";
 import { RootState } from "../../redux/store";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,10 +15,10 @@ import {
 } from "../../redux/slices/cuisineSlice";
 
 const Cuisines = () => {
-  const [selectedFilter, setSelectedFilter] = useState("All");
   const dispatch = useDispatch();
 
   const { isPending, isError, handleLoadMore } = useFetchCuisines();
+  const { data: cuisinesSlugs } = useFetchCuisineSlugs();
 
   const setMenus = useSelector((state: RootState) => state.cuisine.setMenus);
   const totalCount = useSelector(
@@ -39,7 +42,7 @@ const Cuisines = () => {
 
   const Loader = () => (
     <div className="flex justify-center h-screen items-center">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+      <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-black"></div>
     </div>
   );
 
@@ -73,14 +76,12 @@ const Cuisines = () => {
         <Loader />
       ) : (
         <>
-          <FilterSection
-            filters={setMenus}
-            // selectedFilter={selectedFilter}
-            // onFilterSelect={setSelectedFilter}
-          />
+          <FilterSection filters={cuisinesSlugs} />
           <SetMenuGrid menus={setMenus} guestNumber={guestNumber} />
-          <LoadMoreButton onClick={handleLoadMore} />
-
+          <LoadMoreButton
+            onClick={handleLoadMore}
+            disabled={setMenus?.length >= totalCount}
+          />
           <p className="text-center mt-4 text-gray-500">
             Showing {setMenus?.length || 0} of {totalCount} menus.
           </p>

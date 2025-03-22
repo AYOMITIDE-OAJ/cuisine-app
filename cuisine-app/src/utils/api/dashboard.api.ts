@@ -21,8 +21,19 @@ const useDashboardApi = () => {
     }
   };
 
+  const getCuisineSlugs = async () => {
+    try {
+      const { data: res } = await axiosInstance.get(`/cuisines`);
+
+      return res.data;
+    } catch (error) {
+      handleGenericError(error);
+    }
+  };
+
   return {
     getCuisines,
+    getCuisineSlugs,
   };
 };
 

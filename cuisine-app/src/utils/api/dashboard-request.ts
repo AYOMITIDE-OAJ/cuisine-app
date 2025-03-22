@@ -41,3 +41,14 @@ export const useFetchCuisines = () => {
     handleLoadMore,
   };
 };
+
+export const useFetchCuisineSlugs = () => {
+  const { getCuisineSlugs } = useDashboardApi();
+
+  const query = useQuery({
+    queryKey: [queryKeys.cuisineSlugs],
+    queryFn: () => getCuisineSlugs(),
+  });
+
+  return { ...query };
+};
