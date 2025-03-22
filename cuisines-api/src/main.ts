@@ -2,15 +2,18 @@ import { NestFactory } from '@nestjs/core';
 import * as express from 'express';
 import * as cors from 'cors';
 import * as morgan from 'morgan';
-import { AppModule } from './app.module';
+import { MainModule } from './main.module';
 import { ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { HttpExceptionFilter } from './core/filters';
 import { LoggerInterceptor } from './lib/interceptors/transform.interceptor';
+import { SecretsService } from './global/secrets/service';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const configService = app.get<ConfigService>(ConfigService);
+  const app = await NestFactory.create(MainModule, {
+    bufferLogs: true,
+  });
+
+  const { PORT } = app.get<SecretsService>(SecretsService);
 
   app.use(cors({}));
   app.use(express.json());
@@ -22,6 +25,6 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggerInterceptor());
 
   app.setGlobalPrefix('/api');
-  await app.listen(configService.get<string>('PORT'));
+  await app.listen(PORT);
 }
 bootstrap();
