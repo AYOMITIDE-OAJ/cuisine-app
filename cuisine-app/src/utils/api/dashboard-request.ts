@@ -28,7 +28,7 @@ export const useFetchCuisines = () => {
       );
       return res;
     },
-    staleTime: 5000, // ✅ Helps keep previous data when paginating
+    staleTime: 5000,
   });
 
   const handleLoadMore = () => {
