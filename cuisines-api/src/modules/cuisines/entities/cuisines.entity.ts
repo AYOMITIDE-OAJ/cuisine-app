@@ -4,6 +4,7 @@ import {
   PrimaryGeneratedColumn,
   JoinTable,
   ManyToMany,
+  Index,
 } from 'typeorm';
 import { SetMenu } from './setMenu.entity';
 
@@ -15,6 +16,7 @@ export class Cuisine {
   @Column({})
   name: string;
 
+  @Index() // ✅ Index speeds up lookups
   @Column()
   slug: string;
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cuisine } from './entities/cuisines.entity';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import { ErrorHelper } from 'src/core/helpers';
 import { HarvestService } from '../harvest/harvest.service';
 import { SetMenu } from './entities/setMenu.entity';
 import { PaginationDto, PaginationResultDto } from 'src/lib/util/dto';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class CuisinesService {
@@ -15,6 +16,7 @@ export class CuisinesService {
     @InjectRepository(SetMenu)
     private setMenuRepository: Repository<SetMenu>,
     private readonly harvestService: HarvestService,
+    @Inject('CACHE_MANAGER') private cacheManager: Cache, // ✅ Inject Cache
   ) {}
 
   async getCuisines(): Promise<Cuisine[]> {
@@ -27,13 +29,19 @@ export class CuisinesService {
     }
   }
 
-  async getSetMenusx(
+  async getSetMenus(
     cuisineSlug?: string,
     paginationQuery?: PaginationDto,
   ): Promise<any> {
     try {
-      const { limit, page } = paginationQuery;
-      const skip = (page - 1) * limit;
+      const limit = paginationQuery.limit || 6;
+      const page = paginationQuery.page || 1;
+      const cacheKey = `setMenus_${cuisineSlug}_${page}_${limit}`;
+      const cachedData = await this.cacheManager.get(cacheKey);
+
+      if (cachedData) return cachedData;
+
+      const skip = Math.max((page - 1) * limit, 0);
 
       const query = this.setMenuRepository
         .createQueryBuilder('setMenu')
@@ -48,44 +56,12 @@ export class CuisinesService {
       }
 
       const [data, count] = await query.getManyAndCount();
+      const result = new PaginationResultDto(data, count, { limit, page });
 
-      return new PaginationResultDto(data, count, { limit, page });
+      await this.cacheManager.set(cacheKey, result, 300);
+      return result;
     } catch (error) {
       ErrorHelper.BadRequestException(error);
-    }
-  }
-
-  async getSetMenus(
-    cuisineSlug?: string,
-    paginationQuery?: PaginationDto,
-  ): Promise<any> {
-    try {
-      const { limit, page } = paginationQuery;
-      const skip = Math.max((page - 1) * limit, 0);
-
-      const query = this.setMenuRepository
-        .createQueryBuilder('setMenu')
-        .leftJoinAndSelect('setMenu.cuisines', 'cuisine')
-        .where('setMenu.isLive = :isLive', { isLive: true })
-        .orderBy('setMenu.number_of_orders', 'DESC')
-        .skip(skip)
-        .take(limit);
-
-      if (cuisineSlug) {
-        query
-          .andWhere('cuisine.slug = :slug')
-          .setParameters({ slug: cuisineSlug });
-      }
-
-      const [data, count] = await query.getManyAndCount();
-
-      // Return paginated result with metadata
-      return new PaginationResultDto(data, count, {
-        limit,
-        page,
-      });
-    } catch (error) {
-      throw ErrorHelper.BadRequestException(error);
     }
   }
 

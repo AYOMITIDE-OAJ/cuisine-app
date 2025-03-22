@@ -5,6 +5,7 @@ import {
   ManyToOne,
   ManyToMany,
   JoinTable,
+  Index,
 } from 'typeorm';
 import { Cuisine } from './cuisines.entity';
 @Entity()
@@ -102,6 +103,7 @@ export class SetMenu {
   @ManyToOne(() => Cuisine, (cuisine) => cuisine.setMenus)
   cuisine: Cuisine;
 
+  @Index() // ✅ Index speeds up filtering
   @Column({ default: true })
   isLive: boolean;
 }
