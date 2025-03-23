@@ -25,7 +25,7 @@ The app is optimized for performance using caching mechanisms in the API and laz
 - **API Endpoints:**  
   - `/api/cuisines` – Retrieve all cuisines ordered by the number of orders.  
   - `/api/cuisines/set-menus` – Retrieve paginated set menus; filterable by cuisine slug.  
-  - `/api/cuisines/sync` – Trigger synchronization of cuisines and set menus via the Harvest Service. citeturn0file3
+  - `/api/cuisines/sync` – Trigger synchronization of cuisines and set menus via the Harvest Service. 
 
 - **Caching and Optimization:**  
   - Utilizes the **CacheModule** (with TTL of 5 minutes) to optimize repeated requests and reduce database load. (See caching in the `CuisinesService` and `CacheModule` configuration 
@@ -40,7 +40,7 @@ The app is optimized for performance using caching mechanisms in the API and laz
   - The project includes a throttling mechanism (via `@nestjs/throttler`) that limits request rates (configured at 1 request per second).
 
 - **Testing:**  
-  - Implements unit tests (using **Jest**) for controllers and services to ensure code quality. citeturn0file0
+  - Implements unit tests (using **Jest**) for controllers and services to ensure code quality. 
 
 ### Frontend (cuisine-app)
 - **Dashboard Interface:**  
@@ -111,7 +111,7 @@ The app is optimized for performance using caching mechanisms in the API and laz
    ```bash
    npm run test
    ```  
-   citeturn0file9
+
 
 ### Frontend Setup (`cuisine-app`)
 1. Open a new terminal and navigate to the frontend folder:
@@ -126,7 +126,7 @@ The app is optimized for performance using caching mechanisms in the API and laz
    ```bash
    npm run dev
    ```  
-   citeturn0file18
+
 
 ---
 
@@ -195,7 +195,7 @@ The app is optimized for performance using caching mechanisms in the API and laz
   **GET** `/api/cuisines/sync`  
   Triggers the Harvest Service to synchronize and insert set menus fetched from an external booking API.
   
-  citeturn0file0
+ 
 
 ### Frontend Usage
 - **Home Page:**  
@@ -204,7 +204,7 @@ The app is optimized for performance using caching mechanisms in the API and laz
 - **Cuisines Dashboard:**  
   On the `/cuisines` page, users see a grid of set menus. Features include:
   - **Filters:** Users can filter menus based on available cuisine slugs.
-  - **Pagination:** A "Load More" button fetches additional menus, powered by React Query and Redux (see `incrementPage` action in the Redux slice). citeturn0file8
+  - **Pagination:** A "Load More" button fetches additional menus, powered by React Query and Redux (see `incrementPage` action in the Redux slice). 
   - **Guest Controls:** Increment and decrement buttons allow adjusting the number of guests, which can modify the view of dish portions.
   
 - **Error Handling & Notifications:**  
