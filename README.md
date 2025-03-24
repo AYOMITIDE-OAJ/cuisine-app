@@ -11,8 +11,7 @@ This documentation covers an overview of both the frontend and backend parts, fe
 ---
 
 ## Introduction
-
-Welcome to the **Cuisine App** repository!  
+ 
 This project is a full-stack application designed to fetch, display, and manage cuisine set menus. The backend API (located in the `cuisines-api` folder) is a NestJS application that provides endpoints for retrieving cuisines and their corresponding set menus. Meanwhile, the frontend (located in the `cuisine-app` folder) is a modern React application built using Vite. It leverages Redux for state management and React Query for efficient and asynchronous data fetching, ensuring a seamless user experience. 🚀
 
 The app is optimized for performance using caching mechanisms in the API and lazy-loading techniques in the frontend. Detailed endpoints, state management, and error-handling strategies ensure robust functionality. 
@@ -34,7 +33,7 @@ The app is optimized for performance using caching mechanisms in the API and laz
 - **Database and ORM:**  
   - Uses **TypeORM** to connect to a PostgreSQL database.  
   - Entities include `Cuisine` and `SetMenu` with relational mappings.  
-  - Optimized with database indices to speed up lookups (e.g. the cuisine slug index). citeturn0file2
+  - Optimized with database indices to speed up lookups (e.g. the cuisine slug index).
 
 - **Rate Limiting:**  
   - The project includes a throttling mechanism (via `@nestjs/throttler`) that limits request rates (configured at 1 request per second).
@@ -162,7 +161,7 @@ The app is optimized for performance using caching mechanisms in the API and laz
     inject: [SecretsService],
   })
   ```
-  citeturn0file7
+ 
 
 ### Frontend (cuisine-app)
 - **Vite Environment:**  
@@ -180,6 +179,10 @@ The app is optimized for performance using caching mechanisms in the API and laz
 ## Usage
 
 ### Backend API Endpoints
+
+> **API Documentation:** [View complete API documentation](https://rswip61og6.apidog.io/)
+
+
 - **Retrieve Cuisines:**  
   **GET** `/api/cuisines`  
   Returns a list of available cuisines sorted by order count.
