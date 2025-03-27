@@ -1,12 +1,12 @@
 export interface ISetMenu {
-  created_at: string; // Assuming it's an ISO date string
+  created_at: string;
   cuisines: Cuisine[];
   description: string;
   display_text: number;
   image: string;
   thumbnail: string;
-  is_vegan: number; // or boolean if it's always 0 or 1
-  is_vegetarian: number; // or boolean if it's always 0 or 1
+  is_vegan: number;
+  is_vegetarian: number;
   name: string;
   status: number;
   groups: {
@@ -22,15 +22,15 @@ export interface ISetMenu {
   };
   price_per_person: number;
   min_spend: number;
-  is_seated: number; // or boolean
-  is_standing: number; // or boolean
-  is_canape: number; // or boolean
-  is_mixed_dietary: number; // or boolean
-  is_meal_prep: number; // or boolean
-  is_halal: number; // or boolean
-  is_kosher: number; // or boolean
-  price_includes: any | null; // Assuming it can be any type or null
-  highlight: any | null; // Assuming it can be any type or null
+  is_seated: number;
+  is_standing: number;
+  is_canape: number;
+  is_mixed_dietary: number;
+  is_meal_prep: number;
+  is_halal: number;
+  is_kosher: number;
+  price_includes: any | null;
+  highlight: any | null;
   available: boolean;
   number_of_orders: number;
 }

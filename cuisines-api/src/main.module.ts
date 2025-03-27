@@ -26,7 +26,7 @@ import { SecretsService } from './global/secrets/service';
         password: secretsService.DB_PASSWORD,
         database: secretsService.DB_NAME,
         entities: [Cuisine, SetMenu],
-        synchronize: true, // Be careful with this option in production
+        synchronize: true,
       }),
     }),
     ThrottlerModule.forRoot({

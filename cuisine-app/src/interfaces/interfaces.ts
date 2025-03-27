@@ -41,8 +41,8 @@ interface SetMenu {
   is_meal_prep: boolean;
   is_halal: boolean;
   is_kosher: boolean;
-  price_includes: null | any; // Adjust 'any' if you have more specific info
-  highlight: null | any; // Adjust 'any' if you have more specific info
+  price_includes: null | any;
+  highlight: null | any; 
   available: boolean;
   number_of_orders: number;
   isLive: boolean;
